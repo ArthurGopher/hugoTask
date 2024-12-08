@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  hugo:
+    image: klakegg/hugo:0.101.0-ext-alpine
+    container_name: hugo
+    command: server
+    platform: linux/amd64  # образ klakegg/hugo:0.101.0-ext-alpine предназначен для архитектуры AMD64
+    entrypoint: hugo
+    volumes:
+      - "./hugo:/src"      
+    working_dir: /src      
+    ports:
+      - "1313:1313"        
+    networks:
+      - mylocal
+
+  proxy:
+    build: ./proxy          
+    container_name: proxy
+    volumes:
+      - "./hugo/content:/app/static"  
+    ports:
+      - "8080:8080"         
+    networks:
+      - mylocal          
+
+networks:
+  mylocal:
+    driver: bridge          
